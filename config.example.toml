@@ -1,0 +1,150 @@
+# clipbot ayarları — örnek dosya
+# Kullanmak için: bu dosyayı config.toml olarak kopyala, API anahtarlarını doldur.
+# config.toml .gitignore'da, yani anahtarların repoya gitmez.
+
+[paths]
+sessions = "sessions"   # kayıtlar buraya
+clips = "clips"         # üretilen klipler buraya
+ffmpeg = ""             # boşsa imageio-ffmpeg ya da PATH'teki ffmpeg kullanılır
+
+[record]
+max_hours = 12          # tüm yayın: yayın bitince kendiliğinden durur; bu sadece güvenlik sınırı
+sample_seconds = 5      # chat/ses örnekleme aralığı
+
+[detect]
+z_threshold = 2.0       # chat z-skoru eşiği (düşür = daha çok klip)
+min_gap_seconds = 45    # iki aday arası en az boşluk
+pre_roll = 4            # kesim başlangıcı patlamadan kaç sn önce
+clip_seconds = 32       # klip uzunluğu
+max_clips = 8           # oturum başına en fazla aday
+min_words = 3           # klipte en az bu kadar kelime olmalı; konuşmasız anlar atılır (0 = kapalı)
+
+[video]
+# fill = oyunu panel olarak ortalar, ust/alt ayni goruntunun bulanigi: en net goruntu (1.2x)
+# crop_center = tam ekran 9:16 (kayit 1080p ise 1.8x buyutme -> biraz yumusak) — GTA 6 tam ekran icin bu
+# yuz kamerasi solda ise crop_left, sagda ise crop_right ; blurpad = 16:9 ortada
+mode = "stack"          # stack | fill | blurpad | crop_center | crop_left | crop_right | original
+panel_aspect = 1.2       # fill: panel en/boy orani (oyun alani ~1.2, 4:5 icin 0.8, kare icin 1.0)
+# stack: oyun ustte tam genislikte panel, altinda kamera karti, en altta altyazi.
+stack_gap = 24           # oyun paneli ile kamera karti arasi bosluk (px)
+cam_size = 0.66          # kamera kartinin genisligi (cikti genisligine oran)
+stack_max_game = 0.72    # oyun paneli en fazla bu kadar yuksek olabilir
+# Yayinin kendi olu alanlari (oran). bunlar TARAYICI oyunu duzeni icin ayarli;
+# GTA 6 tam ekran olunca: mode = "crop_center" ve trim_* = 0.0 yap.
+trim_top = 0.225         # tarayici sekme + adres cubugu
+trim_bottom = 0.115      # gorev cubugu + alt bos zemin
+trim_left = 0.27         # soldaki menu paneli
+trim_right = 0.235       # sagdaki bagis paneli
+progress_bar = true      # alt kenarda ince ilerleme cubugu (izlenme suresini uzatir)
+progress_height = 8
+progress_color = "0xFFC800"
+fade_seconds = 0.3       # sonda yumusak kararma (0 = kapali)
+width = 1080
+height = 1920
+fps = 30
+crf = 20
+preset = "veryfast"
+logo = ""               # istersen kanal logonun .png yolu (sağ alta basılır)
+
+[facecam]
+# yayindaki webcam'i otomatik bulur ve klibin kosesine kucuk pencere (PIP) olarak basar.
+# opencv gerekir: pip install opencv-python-headless numpy
+enabled = true
+samples = 18             # tespit icin kayittan kac kare orneklenir
+scan_seconds = 420       # kaydin ilk kac saniyesi taranir (canli kayitta da yeter)
+size = 0.34              # cikti genisligine oran (1080'de ~367 px)
+position = "auto"        # auto = sag ust | top-left | bottom-right | bottom-left
+margin = 40              # kenardan bosluk (px)
+border = 4               # beyaz cerceve kalinligi (0 = cercevesiz)
+retry_seconds = 600      # kamera bulunamadiysa kac saniye sonra yeniden denenir
+
+[subs]
+# altyazi konumu: 1920 yukseklikte alt kenardan px (buyuk = yukari)
+margin_v = 470
+highlight = true         # konusulan kelime sari yanar
+hook_seconds = 2.6       # klip basinda ustte buyuk baslik
+enabled = true
+backend = "auto"        # auto | groq | local  (groq: GROQ_API_KEY, ücretsiz kota)
+api_key = ""            # boşsa GROQ_API_KEY ortam değişkeni okunur
+groq_model = "whisper-large-v3-turbo"
+model = "small"         # yerel whisper: tiny | base | small | medium
+device = "auto"         # auto | cpu | cuda
+language = ""           # boş = otomatik dil; İngilizce yayıncıda "en", Almanca'da "de" yazabilirsin
+max_words = 3
+font = "Arial Black"
+size = 92
+
+[caption]
+hashtags = "#gta6 #gta6clips #gta #shorts #reels #fyp #gaming #rockstar"
+template = "{emoji} {title}\n\n{channel} • GTA 6\n\n{hashtags}"
+emoji = "🔥"             # baslik basina emoji (bos = yok)
+
+[audio]
+normalize = true         # sesi telefon hoparlorunde duyulur seviyeye cek
+target_lufs = -12.5        # hedef (YouTube ~-14 LUFS'e normalize eder)
+true_peak = -1.2         # tepe siniri (AAC transcode'da kirpilmasin)
+lra = 40.0               # yayinin dinamik araligi genis, kucuk LRA hedefe ulasmiyor
+linear = false           # false = dinamik mod
+highpass = 90.0          # rumble temizligi (tepe bosaltir)
+compress = true          # patlamalari kis, ortalamayi yukselt
+compress_threshold = -30.0
+compress_ratio = 8.0
+compress_attack = 3.0
+compress_release = 120.0
+compress_makeup = 10.0
+limiter = 0.79           # final limiter (0.79 = -2 dBFS, AAC tasmasini da kapatir)
+
+[sfx]
+# klibe gomulen ses efektleri (dosyalar ilk render'da ffmpeg ile uretilir)
+enabled = true
+boom_at = 0.08           # boom: klibin basindaki kanca vurusu (sn)
+boom_volume = 0.8        # 0.5 sakin, 1.0 sert
+whoosh_before_end = 1.1  # whoosh: klibin bitiminden kac sn once
+whoosh_volume = 0.6
+
+[auto]
+# canli takip: son N saniyeyi analiz et, tabandan bu kadar yuksek sesi ''patlama'' say
+analyze_every = 20       # kac saniyede bir yeni bolge analiz edilir
+boost_db = 6.0           # dusur = daha cok klip (5 iyi baslangic), yukselt = sadece buyuk anlar
+warmup_seconds = 120     # ilk 2 dk taban olcumu (erken kesmesin)
+min_lufs = -38.0         # bundan kisik sesler patlama sayilmaz (sessizligin bitisi klip olmasin)
+min_len = 1.5            # patlama en az bu kadar surmeli (sn)
+max_clips = 0            # 0 = sinirsiz
+# Secim kalitesi: sadece ses yuksek diye menu/oyun gecisi kliplenmesin, chat de tepki versin.
+require_chat = true      # Twitch'te chat patlamasi olmayan ses olaylarini atla
+chat_min = 0.3           # chat patlamasi en az bu kadar mesaj/sn (kucuk kanallar icin taban)
+chat_mult = 2.0          # ya da oturum chat tabaninin bu kati (buyuk chat'te patlama bol olur)
+chat_only = true         # ses patlamasi olmasa da buyuk chat patlamasini klip yap
+
+[upload]
+enabled = false          # auto/cut yuklesin mi (auto --upload da acar)
+privacy = "public"       # public | unlisted | private
+category = "20"          # 20 = Gaming
+client = "client_secret.json"   # Google Cloud OAuth (Desktop app) dosyasi
+token = "youtube_token.json"    # auth-youtube sonrasi olusur
+oauth_port = 8765
+extra_tags = "valorant,gaming,twitch"
+platforms = "youtube,tiktok,instagram"   # upload/auto hangi platformlara yuklesin (hazir olmayan atlanir)
+
+[tiktok]
+# https://developers.tiktok.com -> Products -> Content Posting API
+mode = "direct"          # direct = profiline paylas (video.publish) | inbox = taslak (video.upload)
+privacy = "PUBLIC_TO_EVERYONE"   # denetlenmemis uygulamada SELF_ONLY zorunlu
+client_key = ""          # bos = TIKTOK_CLIENT_KEY ortam degiskeni
+client_secret = ""       # bos = TIKTOK_CLIENT_SECRET
+scope = "video.publish,video.upload"
+token = "tiktok_token.json"
+redirect_uri = ""        # bos = http://127.0.0.1:8766/  (Login Kit'te aynisi kayitli olmali)
+oauth_port = 8766
+
+[instagram]
+# Instagram API with Instagram Login (Creator/Business hesap)
+app_id = ""              # bos = INSTAGRAM_APP_ID
+app_secret = ""          # bos = INSTAGRAM_APP_SECRET
+token = "instagram_token.json"
+api_version = "v26.0"
+ig_user_id = ""          # auth-instagram token dosyasina yazar
+share_to_feed = true
+public_url_template = "" # doluysa video_url yolu kullanilir: "https://cdn.ornek.com/{name}/{file}"
+redirect_uri = ""        # bos = http://127.0.0.1:8768/
+oauth_port = 8768

@@ -1,0 +1,13 @@
+# çekirdek için ffmpeg dışında hiçbir şey şart değil (imageio-ffmpeg ffmpeg'i getirir)
+imageio-ffmpeg>=0.5
+
+# canlı yayın URL'sini çözmek için
+streamlink>=6.0
+yt-dlp>=2025.1.1
+
+# webcam tespiti (kamerayı bulup klibe PIP basmak için) — opsiyonel ama önerilir
+numpy>=1.26
+opencv-python-headless>=4.9,<5
+
+# altyazı (opsiyonel; Python 3.12/3.13'te sorunsuz, 3.15'te wheel olmayabilir)
+faster-whisper>=1.0

@@ -1,0 +1,20 @@
+# İzlenecek yayıncılar — sırayla kullan, aynı anda hepsini kaydetme (bant genişliği + disk).
+# Bir kanal bitince sıradakine geç: watch komutuna --url olarak buradaki adresi ver.
+
+[[channels]]
+name = "xrohat"
+url = "https://www.twitch.tv/xrohat"
+chat = "xrohat"          # twitch kanal adı (URL'den de bulunur)
+note = "GTA 6 story / freeroam"
+
+[[channels]]
+name = "ornek2"
+url = "https://kick.com/ornek2"
+chat = ""                # Kick chat'i MVP'de izlenmiyor -> ses + manuel kesim
+note = "Kick yayıncısı"
+
+[[channels]]
+name = "ornek3"
+url = "https://www.youtube.com/@ornek3/live"
+chat = ""
+note = "YouTube canlı"
